@@ -1,10 +1,7 @@
 "use client";
 import logo from "/public/wobot_logo_blue.svg";
 import Image from "next/image";
-import Select from "@/components/Select/Select";
 import { useMemo, useState } from "react";
-import { GoLocation } from "react-icons/go";
-import { BiWifi } from "react-icons/bi";
 import {
   useChangeStatusMutation,
   useGetCameraListQuery,
@@ -19,7 +16,6 @@ import Table from "@/components/Table/Table";
 import Checkbox from "@/components/Checkbox/Checkbox";
 import {
   CameraData,
-  grade,
   StatusChangePayload,
   statusType,
 } from "@/store/interfaces/cameraInterface";
@@ -29,12 +25,6 @@ import { FaRegCircleXmark } from "react-icons/fa6";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { STATIC_DATA } from "@/utilities/data";
 import useSearchAndFilter from "@/hooks/useTableActions";
-import {
-  MdKeyboardArrowLeft,
-  MdKeyboardArrowRight,
-  MdKeyboardDoubleArrowLeft,
-  MdKeyboardDoubleArrowRight,
-} from "react-icons/md";
 import Title from "@/components/Title/Title";
 import Input from "@/components/Input/Input";
 import { IoSearchOutline } from "react-icons/io5";
