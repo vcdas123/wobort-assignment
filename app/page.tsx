@@ -1,17 +1,12 @@
 "use client";
 import logo from "/public/wobot_logo_blue.svg";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useChangeStatusMutation,
   useGetCameraListQuery,
 } from "@/store/api/cameraApi";
-import {
-  getUniqueArrayByKey,
-  hasValue,
-  makeOptions,
-  renderProgress,
-} from "@/utilities/helpers";
+import { hasValue, renderProgress } from "@/utilities/helpers";
 import Table from "@/components/Table/Table";
 import Checkbox from "@/components/Checkbox/Checkbox";
 import {
@@ -35,34 +30,21 @@ import { AiOutlineDatabase } from "react-icons/ai";
 import { CameraTableHeads } from "@/components/Camera/TableParts/TableParts";
 import TableFilters from "@/components/Camera/Filters/TableFilters";
 import TablePagination from "@/components/Camera/TablePagination/TablePagination";
+import { MdDeleteOutline } from "react-icons/md";
 
-const cameraList = STATIC_DATA?.data;
+const STATIC = STATIC_DATA?.data;
 
 export default function Home() {
-  // const {
-  //   data: cameraList,
-  //   isLoading,
-  //   refetch,
-  //   isFetching,
-  // } = useGetCameraListQuery();
+  const {
+    data: fetchedCameraList,
+    isLoading,
+    refetch,
+    isFetching,
+  } = useGetCameraListQuery();
+  const [cameraList, setCameraList] = useState<CameraData[]>(STATIC);
   const [changeStatus, { isLoading: changingStatus }] =
     useChangeStatusMutation();
   const [selItem, setSelItem] = useState<CameraData | undefined>();
-
-  const statusOptions = useMemo(() => {
-    return [
-      { label: "Active", value: "Active" },
-      { label: "Inactive", value: "Inactive" },
-    ];
-  }, []);
-
-  const locationOptions = useMemo(() => {
-    return makeOptions(
-      getUniqueArrayByKey(cameraList || [], "location"),
-      "location",
-      "location"
-    );
-  }, [cameraList]);
 
   const searchKeys = ["name", "location", "status", "recorder", "tasks"] as any;
 
@@ -110,6 +92,21 @@ export default function Home() {
     }
   };
 
+  const deleteHandler = (cameraItem: CameraData) => {
+    console.log("RUNNn", cameraItem);
+    setCameraList(prev => {
+      const update = JSON.parse(JSON.stringify(prev));
+      const latest = update?.filter(
+        (item: CameraData) => Number(item?.id) !== Number(cameraItem?.id)
+      );
+      return latest;
+    });
+  };
+
+  // useEffect(() => {
+  //   if (fetchedCameraList) setCameraList(fetchedCameraList);
+  // }, [fetchedCameraList]);
+
   return (
     <section className="container mt-5 mb-5 flex flex-col gap-5">
       <div className="flex justify-center items-center">
@@ -128,7 +125,7 @@ export default function Home() {
       <div className="flex flex-col gap-1">
         <div className="bg-white py-1 px-2 w-full flex justify-between">
           <TableFilters
-            cameraList={cameraList}
+            cameraList={cameraList || []}
             filters={filters}
             setFilter={setFilter}
           />
@@ -169,28 +166,34 @@ export default function Home() {
                     <Badge text={camera?.status} variant={camera?.status} />
                   </Table.Td>
                   <Table.Td>
-                    {changingStatus && camera?.id === selItem?.id ? (
-                      <div className="flex items-center justify-center">
-                        <Spinner />
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-4">
-                        <FaRegCircleXmark
-                          className="cursor-pointer text-xl text-gray-700 hover:text-gray-500 transition-all duration-300"
-                          onClick={() => {
-                            setSelItem(camera);
-                            changeStatusHandler("Inactive", camera);
-                          }}
-                        />
-                        <FaRegCheckCircle
-                          className="cursor-pointer text-xl text-gray-700 hover:text-gray-500 transition-all duration-300"
-                          onClick={() => {
-                            setSelItem(camera);
-                            changeStatusHandler("Active", camera);
-                          }}
-                        />
-                      </div>
-                    )}
+                    <div className="flex items-center gap-4">
+                      {changingStatus && camera?.id === selItem?.id ? (
+                        <div className="flex items-center justify-center">
+                          <Spinner />
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-4">
+                          <FaRegCircleXmark
+                            className="cursor-pointer text-xl text-gray-700 hover:text-gray-500 transition-all duration-300"
+                            onClick={() => {
+                              setSelItem(camera);
+                              changeStatusHandler("Inactive", camera);
+                            }}
+                          />
+                          <FaRegCheckCircle
+                            className="cursor-pointer text-xl text-green-700 hover:text-gray-500 transition-all duration-300"
+                            onClick={() => {
+                              setSelItem(camera);
+                              changeStatusHandler("Active", camera);
+                            }}
+                          />
+                        </div>
+                      )}
+                      <MdDeleteOutline
+                        className="cursor-pointer text-2xl text-red-600 hover:text-gray-500 transition-all duration-300"
+                        onClick={() => deleteHandler(camera)}
+                      />
+                    </div>
                   </Table.Td>
                 </Table.Tr>
               ))}

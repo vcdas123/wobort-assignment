@@ -51,16 +51,15 @@ const Select: React.FC<SelectProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     }
 
-    // Adjust dropdown position based on available space
     if (selectRef.current) {
       const rect = selectRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
       const spaceAbove = rect.top;
 
       if (spaceBelow < 200 && spaceAbove > 200) {
-        setPosition("top"); // Open above if not enough space below
+        setPosition("top");
       } else {
-        setPosition("bottom"); // Default to open below
+        setPosition("bottom");
       }
     }
 
