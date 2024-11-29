@@ -1,12 +1,14 @@
 "use client";
-import PageHeader from "@/components/PageHeader/PageHeader";
 import logo from "/public/wobot_logo_blue.svg";
 import Image from "next/image";
 import Select from "@/components/Select/Select";
 import { useMemo, useState } from "react";
 import { GoLocation } from "react-icons/go";
 import { BiWifi } from "react-icons/bi";
-import { useGetCameraListQuery } from "@/store/api/cameraApi";
+import {
+  useChangeStatusMutation,
+  useGetCameraListQuery,
+} from "@/store/api/cameraApi";
 import {
   getUniqueArrayByKey,
   hasValue,
@@ -14,7 +16,11 @@ import {
 } from "@/utilities/helpers";
 import Table from "@/components/Table/Table";
 import Checkbox from "@/components/Checkbox/Checkbox";
-import { CameraData } from "@/store/interfaces/cameraInterface";
+import {
+  CameraData,
+  StatusChangePayload,
+  statusType,
+} from "@/store/interfaces/cameraInterface";
 import CameraName from "@/components/Camera/CameraName/CameraName";
 import Badge from "@/components/Badge/Badge";
 import { FaRegCircleXmark } from "react-icons/fa6";
@@ -30,15 +36,21 @@ import {
 import Title from "@/components/Title/Title";
 import Input from "@/components/Input/Input";
 import { IoSearchOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
+import Spinner from "@/components/Loaders/Spinner";
 
 const cameraList = STATIC_DATA?.data;
 
 export default function Home() {
-  // const { data: cameraList } = useGetCameraListQuery();
-
-  const [location, setLocation] = useState<string>("");
-  const [status, setStatus] = useState<string>("");
-  const [dataPerPg, setDataPerPg] = useState<number>(5);
+  // const {
+  //   data: cameraList,
+  //   isLoading,
+  //   refetch,
+  //   isFetching,
+  // } = useGetCameraListQuery();
+  const [changeStatus, { isLoading: changingStatus }] =
+    useChangeStatusMutation();
+  const [selItem, setSelItem] = useState<CameraData | undefined>();
 
   const statusOptions = useMemo(() => {
     return [
@@ -78,6 +90,28 @@ export default function Home() {
     endRange,
     totalFilteredDataCount,
   } = useSearchAndFilter(cameraList || [], searchKeys);
+
+  const changeStatusHandler = async (
+    status: statusType,
+    cameraItem: CameraData
+  ) => {
+    if (changingStatus) return;
+    try {
+      const PAYLOAD: StatusChangePayload = {
+        id: Number(cameraItem?.id),
+        status,
+      };
+      const res = await changeStatus(PAYLOAD).unwrap();
+      if (res && Number(res?.status) === 200) {
+        toast.success(res?.message || "Status Changed!");
+        // refetch();
+      } else {
+        toast.error(res?.message || "Something went wrong");
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Something went wrong");
+    }
+  };
 
   return (
     <section className="container mt-5 flex flex-col gap-5">
@@ -157,10 +191,28 @@ export default function Home() {
                     <Badge text={camera?.status} variant={camera?.status} />
                   </Table.Td>
                   <Table.Td>
-                    <div className="flex items-center gap-4">
-                      <FaRegCircleXmark className="cursor-pointer text-xl text-gray-700 hover:text-gray-500 transition-all duration-300" />
-                      <FaRegCheckCircle className="cursor-pointer text-xl text-gray-700 hover:text-gray-500 transition-all duration-300" />
-                    </div>
+                    {changingStatus && camera?.id === selItem?.id ? (
+                      <div className="flex items-center justify-center">
+                        <Spinner />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-4">
+                        <FaRegCircleXmark
+                          className="cursor-pointer text-xl text-gray-700 hover:text-gray-500 transition-all duration-300"
+                          onClick={() => {
+                            setSelItem(camera);
+                            changeStatusHandler("Inactive", camera);
+                          }}
+                        />
+                        <FaRegCheckCircle
+                          className="cursor-pointer text-xl text-gray-700 hover:text-gray-500 transition-all duration-300"
+                          onClick={() => {
+                            setSelItem(camera);
+                            changeStatusHandler("Active", camera);
+                          }}
+                        />
+                      </div>
+                    )}
                   </Table.Td>
                 </Table.Tr>
               ))}
