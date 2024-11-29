@@ -1,3 +1,4 @@
+"use client";
 import Select from "@/components/Select/Select";
 import React, { useMemo } from "react";
 import {

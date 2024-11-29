@@ -1,3 +1,4 @@
+"use client";
 import Select from "@/components/Select/Select";
 import { Filters as FilterArrIn } from "@/hooks/useTableActions";
 import { CameraData } from "@/store/interfaces/cameraInterface";

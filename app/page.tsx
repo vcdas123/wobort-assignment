@@ -83,7 +83,7 @@ export default function Home() {
       const res = await changeStatus(PAYLOAD).unwrap();
       if (res && Number(res?.status) === 200) {
         toast.success(res?.message || "Status Changed!");
-        // refetch();
+        refetch();
       } else {
         toast.error(res?.message || "Something went wrong");
       }

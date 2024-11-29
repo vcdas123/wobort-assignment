@@ -1,3 +1,4 @@
+"use client";
 import Checkbox from "@/components/Checkbox/Checkbox";
 import Table from "@/components/Table/Table";
 import React from "react";

@@ -1,3 +1,4 @@
+"use client";
 import { grade } from "@/store/interfaces/cameraInterface";
 import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
 
