@@ -2,6 +2,7 @@
 import logo from "/public/wobot_logo_blue.svg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { Tooltip } from "react-tooltip";
 import {
   useChangeStatusMutation,
   useGetCameraListQuery,
@@ -31,6 +32,7 @@ import { CameraTableHeads } from "@/components/Camera/TableParts/TableParts";
 import TableFilters from "@/components/Camera/Filters/TableFilters";
 import TablePagination from "@/components/Camera/TablePagination/TablePagination";
 import { MdDeleteOutline } from "react-icons/md";
+import ActionTooltips from "@/components/Camera/ActionTooltips/ActionTooltips";
 
 const STATIC = STATIC_DATA?.data;
 
@@ -109,6 +111,7 @@ export default function Home() {
 
   return (
     <section className="container mt-5 mb-5 flex flex-col gap-5">
+      <ActionTooltips />
       <div className="flex justify-center items-center">
         <Image src={logo.src} alt="logo" height={36} width={162.62} priority />
       </div>
@@ -174,6 +177,7 @@ export default function Home() {
                       ) : (
                         <div className="flex items-center gap-4">
                           <FaRegCircleXmark
+                            id="inactive-icon"
                             className="cursor-pointer text-xl text-gray-700 hover:text-gray-500 transition-all duration-300"
                             onClick={() => {
                               setSelItem(camera);
@@ -181,6 +185,7 @@ export default function Home() {
                             }}
                           />
                           <FaRegCheckCircle
+                            id="active-icon"
                             className="cursor-pointer text-xl text-green-700 hover:text-gray-500 transition-all duration-300"
                             onClick={() => {
                               setSelItem(camera);
@@ -190,6 +195,7 @@ export default function Home() {
                         </div>
                       )}
                       <MdDeleteOutline
+                        id="del-icon"
                         className="cursor-pointer text-2xl text-red-600 hover:text-gray-500 transition-all duration-300"
                         onClick={() => deleteHandler(camera)}
                       />
