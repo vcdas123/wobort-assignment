@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-type Filters = {
+export type Filters = {
   [key: string]: string;
 };
 

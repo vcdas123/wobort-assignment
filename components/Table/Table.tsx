@@ -4,7 +4,6 @@ import classNames from "classnames";
 
 interface TableComponentProps extends HTMLAttributes<HTMLTableElement> {
   children?: ReactNode;
-  maxHeight?: string;
 }
 
 const Table: FC<TableComponentProps> & {
@@ -13,16 +12,9 @@ const Table: FC<TableComponentProps> & {
   Tr: typeof Tr;
   Th: typeof Th;
   Td: typeof Td;
-} = ({ children, className, maxHeight, ...props }) => {
+} = ({ children, className, ...props }) => {
   return (
-    <div
-      className={classNames("custom-table-container", className)}
-      style={{
-        maxHeight,
-        overflowY: "auto",
-        height: "100%",
-      }}
-    >
+    <div className={classNames("custom-table-container", className)}>
       <table {...props} className={classNames("custom-table", className)}>
         {children}
       </table>

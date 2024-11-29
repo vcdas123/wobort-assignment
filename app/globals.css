@@ -22,6 +22,7 @@
 .custom-table-container {
   max-width: 100%;
   overflow-x: auto;
+  overflow-y: auto;
 }
 
 .custom-table {
@@ -39,6 +40,7 @@
 .custom-table th {
   /* vertical-align: top; */
   color: #545454;
+  font-size: 0.8rem;
 }
 
 .custom-table thead tr {

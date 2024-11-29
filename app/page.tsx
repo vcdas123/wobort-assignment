@@ -13,11 +13,13 @@ import {
   getUniqueArrayByKey,
   hasValue,
   makeOptions,
+  renderProgress,
 } from "@/utilities/helpers";
 import Table from "@/components/Table/Table";
 import Checkbox from "@/components/Checkbox/Checkbox";
 import {
   CameraData,
+  grade,
   StatusChangePayload,
   statusType,
 } from "@/store/interfaces/cameraInterface";
@@ -38,6 +40,11 @@ import Input from "@/components/Input/Input";
 import { IoSearchOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import Spinner from "@/components/Loaders/Spinner";
+import { TiWeatherCloudy } from "react-icons/ti";
+import { AiOutlineDatabase } from "react-icons/ai";
+import { CameraTableHeads } from "@/components/Camera/TableParts/TableParts";
+import TableFilters from "@/components/Camera/Filters/TableFilters";
+import TablePagination from "@/components/Camera/TablePagination/TablePagination";
 
 const cameraList = STATIC_DATA?.data;
 
@@ -114,7 +121,7 @@ export default function Home() {
   };
 
   return (
-    <section className="container mt-5 flex flex-col gap-5">
+    <section className="container mt-5 mb-5 flex flex-col gap-5">
       <div className="flex justify-center items-center">
         <Image src={logo.src} alt="logo" height={36} width={162.62} priority />
       </div>
@@ -130,43 +137,17 @@ export default function Home() {
       />
       <div className="flex flex-col gap-1">
         <div className="bg-white py-1 px-2 w-full flex justify-between">
-          <div className="flex xl:flex-row flex-col xl:items-center gap-3 w-full xl:max-w-[500px]">
-            <Select
-              options={locationOptions}
-              value={String(filters?.location) || ""}
-              onChange={loc => setFilter("location", loc)}
-              leftIcon={<GoLocation className="text-lg text-gray-700" />}
-              placeholder="Location"
-            />
-            <Select
-              options={statusOptions}
-              value={String(filters?.status) || ""}
-              onChange={val => setFilter("status", val)}
-              leftIcon={
-                <BiWifi className="text-lg text-gray-700 transform rotate-45" />
-              }
-              placeholder="Status"
-            />
-          </div>
+          <TableFilters
+            cameraList={cameraList}
+            filters={filters}
+            setFilter={setFilter}
+          />
         </div>
-        <div className="flex flex-col gap-[4px]">
-          <Table maxHeight="700px">
-            <Table.Head>
-              <Table.Tr>
-                <Table.Th>
-                  <Checkbox />
-                </Table.Th>
-                <Table.Th>NAME</Table.Th>
-                <Table.Th>HEALTH</Table.Th>
-                <Table.Th>LOCATION</Table.Th>
-                <Table.Th>RECORDER</Table.Th>
-                <Table.Th>TASKS</Table.Th>
-                <Table.Th>STATUS</Table.Th>
-                <Table.Th>ACTIONS</Table.Th>
-              </Table.Tr>
-            </Table.Head>
+        <div className="flex flex-col gap-[2px]">
+          <Table>
+            <CameraTableHeads />
             <Table.Body>
-              {paginatedData?.map((camera: CameraData, idx: number) => (
+              {paginatedData?.map((camera: CameraData) => (
                 <Table.Tr key={camera?.id}>
                   <Table.Td>
                     <Checkbox />
@@ -177,7 +158,14 @@ export default function Home() {
                       getHighlightedText={getHighlightedText}
                     />
                   </Table.Td>
-                  <Table.Td>{camera?.health?.cloud}</Table.Td>
+                  <Table.Td>
+                    <div className="flex gap-2 items-center">
+                      <TiWeatherCloudy />
+                      {renderProgress(camera?.health?.cloud)}
+                      <AiOutlineDatabase />
+                      {renderProgress(camera?.health?.device)}
+                    </div>
+                  </Table.Td>
                   <Table.Td>
                     {getHighlightedText(hasValue(camera?.location))}
                   </Table.Td>
@@ -218,59 +206,17 @@ export default function Home() {
               ))}
             </Table.Body>
           </Table>
-          <div className="flex justify-end items-center bg-white w-full py-3 px-4 gap-4">
-            <div className=" min-w-[80px]">
-              <Select
-                withCloseBtn={false}
-                disableBorder={true}
-                options={[
-                  {
-                    label: "5",
-                    value: "5",
-                  },
-                  {
-                    label: "10",
-                    value: "10",
-                  },
-                  {
-                    label: "15",
-                    value: "15",
-                  },
-                  {
-                    label: "20",
-                    value: "20",
-                  },
-                  {
-                    label: "25",
-                    value: "25",
-                  },
-                ]}
-                value={String(rowsPerPageState)}
-                onChange={total => setRowsPerPage(Number(total))}
-              />
-            </div>
-            <p className="text-sm">
-              {startRange}-{endRange} of {totalFilteredDataCount}
-            </p>
-            <div className="flex gap-2">
-              <MdKeyboardDoubleArrowLeft
-                className="text-xl text-gray-800 cursor-pointer hover:text-gray-500"
-                onClick={goToFirstPage}
-              />
-              <MdKeyboardArrowLeft
-                className="text-xl text-gray-800 cursor-pointer hover:text-gray-500"
-                onClick={goToPreviousPage}
-              />
-              <MdKeyboardArrowRight
-                className="text-xl text-gray-800 cursor-pointer hover:text-gray-500"
-                onClick={goToNextPage}
-              />
-              <MdKeyboardDoubleArrowRight
-                className="text-xl text-gray-800 cursor-pointer hover:text-gray-500"
-                onClick={goToLastPage}
-              />
-            </div>
-          </div>
+          <TablePagination
+            rowsPerPageState={rowsPerPageState}
+            setRowsPerPage={setRowsPerPage}
+            startRange={startRange}
+            endRange={endRange}
+            totalFilteredDataCount={totalFilteredDataCount}
+            goToFirstPage={goToFirstPage}
+            goToLastPage={goToLastPage}
+            goToNextPage={goToNextPage}
+            goToPreviousPage={goToPreviousPage}
+          />
         </div>
       </div>
     </section>

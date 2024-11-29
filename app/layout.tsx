@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
+import "react-circular-progressbar/dist/styles.css";
 import { ToastContainer } from "react-toastify";
 import ReduxProvider from "@/components/ReduxProvider/ReduxProvider";
 

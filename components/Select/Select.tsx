@@ -32,6 +32,7 @@ const Select: React.FC<SelectProps> = ({
   withCloseBtn = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [position, setPosition] = useState<"top" | "bottom">("bottom");
   const selectRef = useRef<HTMLDivElement | null>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -49,6 +50,20 @@ const Select: React.FC<SelectProps> = ({
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
+
+    // Adjust dropdown position based on available space
+    if (selectRef.current) {
+      const rect = selectRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      if (spaceBelow < 200 && spaceAbove > 200) {
+        setPosition("top"); // Open above if not enough space below
+      } else {
+        setPosition("bottom"); // Default to open below
+      }
+    }
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -69,7 +84,7 @@ const Select: React.FC<SelectProps> = ({
     <div ref={selectRef} className="relative inline-block" style={{ width }}>
       <div
         onClick={() => setIsOpen(prev => !prev)}
-        className={`flex items-center cursor-pointer px-4 py-2 rounded-md  w-full text-sm relative ${
+        className={`flex items-center cursor-pointer px-4 py-2 rounded-md w-full text-sm relative ${
           disableBorder ? "" : "border border-gray-300"
         }`}
       >
@@ -96,12 +111,16 @@ const Select: React.FC<SelectProps> = ({
       </div>
 
       {isOpen && (
-        <ul className="absolute top-full left-0 w-full border border-gray-300 mt-1 bg-white rounded shadow-lg max-h-60 overflow-y-auto z-50">
-          {options.map((option, idx) => (
+        <ul
+          className={`absolute left-0 w-full border border-gray-300 mt-1 bg-white rounded shadow-lg max-h-60 overflow-y-auto z-50 ${
+            position === "top" ? "bottom-full mb-2" : "top-full mt-1"
+          }`}
+        >
+          {options.map(option => (
             <li
               key={option.value}
               onClick={() => handleSelectChange(option.value)}
-              className={`flex items-center text-gray-700 px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+              className={`flex text-sm items-center text-gray-700 px-3 py-1 cursor-pointer hover:bg-gray-100 ${
                 option.value === value ? "bg-[#e7f5ff]" : ""
               }`}
             >
