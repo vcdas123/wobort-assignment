@@ -103,9 +103,9 @@ export default function Home() {
     });
   };
 
-  // useEffect(() => {
-  //   if (fetchedCameraList) setCameraList(fetchedCameraList);
-  // }, [fetchedCameraList]);
+  useEffect(() => {
+    if (fetchedCameraList) setCameraList(fetchedCameraList);
+  }, [fetchedCameraList]);
 
   return (
     <section className="container mt-5 mb-5 flex flex-col gap-5">
@@ -147,9 +147,9 @@ export default function Home() {
                   </Table.Td>
                   <Table.Td>
                     <div className="flex gap-2 items-center">
-                      <TiWeatherCloudy />
+                      <TiWeatherCloudy className="text-xl " />
                       {renderProgress(camera?.health?.cloud)}
-                      <AiOutlineDatabase />
+                      <AiOutlineDatabase className="text-xl " />
                       {renderProgress(camera?.health?.device)}
                     </div>
                   </Table.Td>
