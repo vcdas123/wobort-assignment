@@ -1,8 +1,5 @@
 import { CameraListResponse } from "@/store/interfaces/cameraInterface";
 
-export const BASE_URL = "https://api-app-staging.wobot.ai/app/v1";
-export const token = "4ApVMIn5sTxeW7GQ5VWeWiy";
-
 export const STATIC_DATA: CameraListResponse = {
   status: 200,
   message: "",
