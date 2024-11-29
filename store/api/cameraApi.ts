@@ -6,6 +6,7 @@ import {
   StatusChangePayload,
 } from "../interfaces/cameraInterface";
 
+// env added
 export const cameraApi = createApi({
   reducerPath: "cameraApi",
   baseQuery: fetchBaseQuery({
