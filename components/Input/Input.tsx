@@ -1,3 +1,4 @@
+"use client";
 import React, { InputHTMLAttributes, ReactNode } from "react";
 import classNames from "classnames";
 

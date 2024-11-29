@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect, useRef } from "react";
 import { IoIosArrowDown, IoMdClose } from "react-icons/io";
 
@@ -15,6 +16,8 @@ interface SelectProps {
   rightIcon?: React.ReactNode;
   onChange: (value: string) => void;
   width?: string;
+  disableBorder?: boolean;
+  withCloseBtn?: boolean;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -25,6 +28,8 @@ const Select: React.FC<SelectProps> = ({
   rightIcon = <IoIosArrowDown className="text-lg text-gray-700" />,
   onChange,
   width = "100%",
+  disableBorder = false,
+  withCloseBtn = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement | null>(null);
@@ -64,12 +69,14 @@ const Select: React.FC<SelectProps> = ({
     <div ref={selectRef} className="relative inline-block" style={{ width }}>
       <div
         onClick={() => setIsOpen(prev => !prev)}
-        className="flex items-center cursor-pointer px-4 py-2 rounded-md border border-gray-300 w-full text-sm relative focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+        className={`flex items-center cursor-pointer px-4 py-2 rounded-md  w-full text-sm relative ${
+          disableBorder ? "" : "border border-gray-300"
+        }`}
       >
         {leftIcon && <span className="mr-2">{leftIcon}</span>}
 
         {!selectedOption ? (
-          <span className="text-gray-700">{placeholder}</span>
+          <span className="text-gray-500">{placeholder}</span>
         ) : (
           <>
             {selectedOption?.icon && (
@@ -79,7 +86,7 @@ const Select: React.FC<SelectProps> = ({
           </>
         )}
 
-        {selectedOption ? (
+        {selectedOption && withCloseBtn ? (
           <span className="ml-2 cursor-pointer" onClick={handleClearSelection}>
             <IoMdClose className="text-lg text-gray-700" />
           </span>
@@ -90,12 +97,12 @@ const Select: React.FC<SelectProps> = ({
 
       {isOpen && (
         <ul className="absolute top-full left-0 w-full border border-gray-300 mt-1 bg-white rounded shadow-lg max-h-60 overflow-y-auto z-50">
-          {options.map(option => (
+          {options.map((option, idx) => (
             <li
               key={option.value}
               onClick={() => handleSelectChange(option.value)}
               className={`flex items-center text-gray-700 px-3 py-1 cursor-pointer hover:bg-gray-100 ${
-                option.value === value ? "bg-blue-200" : ""
+                option.value === value ? "bg-[#e7f5ff]" : ""
               }`}
             >
               {option.icon && <span className="mr-2">{option.icon}</span>}
