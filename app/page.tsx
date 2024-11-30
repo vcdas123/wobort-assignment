@@ -2,7 +2,6 @@
 import logo from "/public/wobot_logo_blue.svg";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Tooltip } from "react-tooltip";
 import {
   useChangeStatusMutation,
   useGetCameraListQuery,
@@ -43,7 +42,7 @@ export default function Home() {
     refetch,
     isFetching,
   } = useGetCameraListQuery();
-  const [cameraList, setCameraList] = useState<CameraData[]>(STATIC);
+  const [cameraList, setCameraList] = useState<CameraData[]>([]);
   const [changeStatus, { isLoading: changingStatus }] =
     useChangeStatusMutation();
   const [selItem, setSelItem] = useState<CameraData | undefined>();
@@ -90,7 +89,8 @@ export default function Home() {
         toast.error(res?.message || "Something went wrong");
       }
     } catch (error: any) {
-      toast.error(error?.message || "Something went wrong");
+      console.log(error);
+      toast.error(error?.data?.message || "Something went wrong");
     }
   };
 
@@ -205,6 +205,16 @@ export default function Home() {
               ))}
             </Table.Body>
           </Table>
+          {(isLoading || isFetching) && (
+            <div className="w-full flex justify-center items-center">
+              <p className="text-sm text-gray-500 flex gap-0">
+                <span>
+                  <Spinner />
+                </span>
+                Loading data...
+              </p>
+            </div>
+          )}
           <TablePagination
             rowsPerPageState={rowsPerPageState}
             setRowsPerPage={setRowsPerPage}
