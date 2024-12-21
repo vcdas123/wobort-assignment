@@ -42,7 +42,7 @@ export default function Home() {
     refetch,
     isFetching,
   } = useGetCameraListQuery();
-  const [cameraList, setCameraList] = useState<CameraData[]>([]);
+  const [cameraList, setCameraList] = useState<CameraData[]>(STATIC);
   const [changeStatus, { isLoading: changingStatus }] =
     useChangeStatusMutation();
   const [selItem, setSelItem] = useState<CameraData | undefined>();
