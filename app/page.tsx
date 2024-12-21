@@ -112,8 +112,15 @@ export default function Home() {
   return (
     <section className="container mt-5 mb-5 flex flex-col gap-5">
       <ActionTooltips />
-      <div className="flex justify-center items-center">
-        <Image src={logo.src} alt="logo" height={36} width={162.62} priority />
+      <div className="flex justify-center items-center flex-col">
+        {/* <Image src={logo.src} alt="logo" height={36} width={162.62} priority /> */}
+        <h1 className="text-3xl text-[#495057] tracking-widest mt-5 mb-2 font-bold border-b-2 p-2">
+          ComponentForge
+        </h1>
+        <p className="text-sm text-gray-500 mb-5">
+          Type-safe frontend toolkit demonstrating advanced table features,
+          custom components, and efficient state management solutions.
+        </p>
       </div>
       <Title
         rightSection={
